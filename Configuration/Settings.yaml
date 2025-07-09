@@ -21,16 +21,14 @@ Neos:
                 pattern: ControllerObjectName
                 patternOptions:
                   controllerObjectNamePattern: 'Flownative\WorkspacePreview\Controller\.*'
-
     mvc:
       routes:
-        'Flownative.WorkspacePreview': true
-
+        Flownative.WorkspacePreview: true
   Neos:
     userInterface:
       translation:
         autoInclude:
-          'Flownative.WorkspacePreview':
+          Flownative.WorkspacePreview:
             - Main
             - 'NodeTypes/*'
     Ui:
@@ -38,7 +36,6 @@ Neos:
         javascript:
           'Flownative.WorkspacePreview:Addons':
             resource: '${"resource://Flownative.WorkspacePreview/Public/LinkView/Plugin.js"}'
-
 Flownative:
   TokenAuthentication:
     authenticationProviderName: 'Flownative.WorkspacePreview:TokenAuthenticator'

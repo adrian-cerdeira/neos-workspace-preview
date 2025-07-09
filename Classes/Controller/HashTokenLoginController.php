@@ -26,12 +26,6 @@ class HashTokenLoginController extends AbstractAuthenticationController
     protected $hashAndRolesRepository;
 
     /**
-     * @Flow\Inject
-     * @var ContextFactoryInterface
-     */
-    protected $contextFactory;
-
-    /**
      * @param ActionRequest|null $originalRequest
      */
     protected function onAuthenticationSuccess(ActionRequest $originalRequest = null)
@@ -54,36 +48,38 @@ class HashTokenLoginController extends AbstractAuthenticationController
     /**
      * Get a possible node argument from the current request.
      *
-     * @return NodeInterface|null
+     * @return \Neos\ContentRepository\Core\Projection\ContentGraph\Node|null
      */
-    protected function getNodeArgumentValue(): ?NodeInterface
+    protected function getNodeArgumentValue(): ?\Neos\ContentRepository\Core\Projection\ContentGraph\Node
     {
         if (!$this->request->hasArgument('node')) {
             return null;
         }
 
-        $nodeArgument = new Argument('node', NodeInterface::class);
+        $nodeArgument = new Argument('node', \Neos\ContentRepository\Core\Projection\ContentGraph\Node::class);
         $nodeArgument->setValue($this->request->getArgument('node'));
         return $nodeArgument->getValue();
     }
 
     /**
      * @param string $workspaceName
-     * @param NodeInterface|null $nodeToRedirectTo
+     * @param \Neos\ContentRepository\Core\Projection\ContentGraph\Node|null $nodeToRedirectTo
      * @throws StopActionException
      */
-    protected function redirectToWorkspace(string $workspaceName, NodeInterface $nodeToRedirectTo = null): void
+    protected function redirectToWorkspace(string $workspaceName, \Neos\ContentRepository\Core\Projection\ContentGraph\Node $nodeToRedirectTo = null): void
     {
-        /** @var ContentContext $context */
-        $context = $this->contextFactory->create(['workspaceName' => $workspaceName]);
+        /** @var \Neos\Rector\ContentRepository90\Legacy\LegacyContextStub $context */
+        $context = new \Neos\Rector\ContentRepository90\Legacy\LegacyContextStub(['workspaceName' => $workspaceName]);
 
         $nodeInWorkspace = null;
-        if ($nodeToRedirectTo instanceof NodeInterface) {
+        if ($nodeToRedirectTo instanceof \Neos\ContentRepository\Core\Projection\ContentGraph\Node) {
             $flowQuery = new FlowQuery([$nodeToRedirectTo]);
             $nodeInWorkspace = $flowQuery->context(['workspaceName' => $workspaceName])->get(0);
         }
 
         if ($nodeInWorkspace === null) {
+            // TODO 9.0 migration: !! ContentContext::getCurrentSiteNode() is removed in Neos 9.0. Use Subgraph and traverse up to "Neos.Neos:Site" node.
+
             $nodeInWorkspace = $context->getCurrentSiteNode();
         }
 

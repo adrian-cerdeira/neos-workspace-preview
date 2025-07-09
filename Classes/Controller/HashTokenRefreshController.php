@@ -19,16 +19,22 @@ class HashTokenRefreshController extends ActionController
      * @var WorkspacePreviewTokenFactory
      */
     protected $workspacePreviewTokenFactory;
+    #[\Neos\Flow\Annotations\Inject]
+    protected \Neos\Neos\Domain\Service\WorkspaceService $workspaceService;
 
     /**
      * Will refresh the hash or create an entirely new token for the given workspace
      *
-     * @param Workspace $workspace
+     * @param \Neos\ContentRepository\Core\SharedModel\Workspace\Workspace $workspace
      */
-    public function refreshHashTokenForWorkspaceAction(Workspace $workspace): void
+    public function refreshHashTokenForWorkspaceAction(\Neos\ContentRepository\Core\SharedModel\Workspace\Workspace $workspace): void
     {
-        $this->workspacePreviewTokenFactory->refresh($workspace->getName());
-        $this->addFlashMessage('A new preview token has been generated for workspace "%s", the old one is invalid now!', '', Message::SEVERITY_OK, [$workspace->getTitle()]);
+        // TODO 9.0 migration: Check if you could change your code to work with the WorkspaceName value object instead.
+
+        $this->workspacePreviewTokenFactory->refresh($workspace->workspaceName->value);
+        // TODO 9.0 migration: Make this code aware of multiple Content Repositories.
+
+        $this->addFlashMessage('A new preview token has been generated for workspace "%s", the old one is invalid now!', '', Message::SEVERITY_OK, [$this->workspaceService->getWorkspaceMetadata(\Neos\ContentRepository\Core\SharedModel\ContentRepository\ContentRepositoryId::fromString('default'), $workspace->workspaceName)->title->value]);
         $this->redirectToRequest($this->request->getReferringRequest());
     }
 }

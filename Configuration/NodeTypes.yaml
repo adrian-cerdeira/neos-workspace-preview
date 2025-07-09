@@ -4,12 +4,11 @@
       views:
         previewlink:
           label: i18n
-          group: 'nodeInfo'
+          group: nodeInfo
           position: 20
-          view: 'Flownative.WorkspacePreview/LinkView'
+          view: Flownative.WorkspacePreview/LinkView
           viewOptions:
-            dataSource: 'PreviewLinkView'
-
+            dataSource: PreviewLinkView
 'Neos.Neos:Document':
   superTypes:
     'Flownative.WorkspacePreview:PreviewLinkMixin': true

@@ -28,12 +28,6 @@ class HashTokenCommandController extends CommandController
     protected $workspacePreviewTokenFactory;
 
     /**
-     * @Flow\Inject
-     * @var WorkspaceRepository
-     */
-    protected $workspaceRepository;
-
-    /**
      * Create a token for previewing the workspace with the given name/identifier.
      *
      * @param string $workspaceName
@@ -49,10 +43,16 @@ class HashTokenCommandController extends CommandController
      */
     public function createForAllPossibleWorkspacesCommand(): void
     {
-        /** @var Workspace $workspace */
+        /** @var \Neos\ContentRepository\Core\SharedModel\Workspace\Workspace $workspace */
         foreach ($this->workspaceRepository->findAll() as $workspace) {
+            // TODO 9.0 migration: !! Workspace::isPrivateWorkspace() has been removed in Neos 9.0. Please use the new Workspace permission api instead. See ContentRepositoryAuthorizationService::getWorkspacePermissions()
+
+            // TODO 9.0 migration: !! Workspace::isPrivateWorkspace() has been removed in Neos 9.0. Please use the new Workspace permission api instead. See ContentRepositoryAuthorizationService::getWorkspacePermissions()
+
             if ($workspace->isPrivateWorkspace() || $workspace->isInternalWorkspace()) {
-                $this->createAndOutputWorkspacePreviewToken($workspace->getName());
+                // TODO 9.0 migration: Check if you could change your code to work with the WorkspaceName value object instead.
+
+                $this->createAndOutputWorkspacePreviewToken($workspace->workspaceName->value);
             }
         }
         $this->persistenceManager->persistAll();

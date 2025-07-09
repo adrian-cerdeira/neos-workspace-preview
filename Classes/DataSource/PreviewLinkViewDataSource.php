@@ -53,12 +53,12 @@ class PreviewLinkViewDataSource implements DataSourceInterface
     }
 
     /**
-     * @param NodeInterface|null $node
+     * @param \Neos\ContentRepository\Core\Projection\ContentGraph\Node|null $node
      * @param array $arguments
      * @return array
      * @throws MissingActionNameException
      */
-    public function getData(NodeInterface $node = null, array $arguments = []): array
+    public function getData(\Neos\ContentRepository\Core\Projection\ContentGraph\Node $node = null, array $arguments = []): array
     {
         $link = $this->getLink($node, $error);
         return [
@@ -70,12 +70,12 @@ class PreviewLinkViewDataSource implements DataSourceInterface
     }
 
     /**
-     * @param NodeInterface|null $node
+     * @param \Neos\ContentRepository\Core\Projection\ContentGraph\Node|null $node
      * @param string|null $error
      * @return string
      * @throws MissingActionNameException
      */
-    protected function getLink(NodeInterface $node = null, string &$error = null): string
+    protected function getLink(\Neos\ContentRepository\Core\Projection\ContentGraph\Node $node = null, string &$error = null): string
     {
         if ($node === null) {
             $error = self::ERROR_MISSING_NODE;
@@ -95,7 +95,7 @@ class PreviewLinkViewDataSource implements DataSourceInterface
             return '';
         }
 
-        $contextPath = str_replace('@' . $personalWorkspace->getName(), '@' . $hashAndRoles->getSettings()['workspaceName'], $node->getContextPath());
+        $contextPath = str_replace('@' . $personalWorkspace->getName(), '@' . $hashAndRoles->getSettings()['workspaceName'], \Neos\ContentRepository\Core\SharedModel\Node\NodeAddress::fromNode($node)->toJson());
 
         $url = $this->controllerContext->getUriBuilder()->reset()->setCreateAbsoluteUri(true)
             ->uriFor('authenticate', [

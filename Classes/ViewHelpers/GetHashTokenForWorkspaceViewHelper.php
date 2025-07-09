@@ -20,7 +20,7 @@ class GetHashTokenForWorkspaceViewHelper extends AbstractViewHelper
      */
     public function initializeArguments()
     {
-        $this->registerArgument('workspace', Workspace::class, 'The workspace to get a token for.', true);
+        $this->registerArgument('workspace', \Neos\ContentRepository\Core\SharedModel\Workspace\Workspace::class, 'The workspace to get a token for.', true);
     }
 
     /**
